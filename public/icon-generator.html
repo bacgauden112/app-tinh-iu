@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love App Icon Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fecfef, #ff9a9e);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #c71585;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+    }
+
+    .icon-preview {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .icon-sizes {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
+
+    .icon-container {
+      text-align: center;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-container h3 {
+      color: #c71585;
+      margin: 10px 0;
+    }
+
+    canvas {
+      border: 2px solid #ff69b4;
+      border-radius: 10px;
+      margin: 10px;
+    }
+
+    .download-buttons {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    button {
+      background: linear-gradient(45deg, #ff69b4, #ff1493);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+    }
+
+    .instructions {
+      background: #fff;
+      border-left: 5px solid #ff69b4;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .instructions h3 {
+      color: #c71585;
+      margin-top: 0;
+    }
+
+    .instructions ol {
+      color: #666;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>💕 App Tình Iu - Icon Generator</h1>
+
+    <div class="icon-preview">
+      <h2 style="color: #c71585;">Icon Preview</h2>
+      <img src="love-app-icon.svg" width="256" height="256" alt="Love App Icon"
+        style="border-radius: 60px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+    </div>
+
+    <div class="icon-sizes">
+      <div class="icon-container">
+        <h3>192×192px (PWA Small)</h3>
+        <canvas id="canvas192" width="192" height="192"></canvas>
+      </div>
+
+      <div class="icon-container">
+        <h3>512×512px (PWA Large)</h3>
+        <canvas id="canvas512" width="512" height="512"></canvas>
+      </div>
+    </div>
+
+    <div class="download-buttons">
+      <button onclick="downloadIcon(192)">📱 Tải xuống 192×192px</button>
+      <button onclick="downloadIcon(512)">🖥️ Tải xuống 512×512px</button>
+      <button onclick="downloadAllIcons()">💝 Tải xuống tất cả</button>
+    </div>
+
+    <div class="instructions">
+      <h3>🎯 Cách sử dụng:</h3>
+      <ol>
+        <li><strong>Xem preview:</strong> Icon SVG hiển thị phía trên với thiết kế trái tim hồng cute</li>
+        <li><strong>Tải xuống icon:</strong> Click các nút để tải icon với kích thước phù hợp cho PWA</li>
+        <li><strong>Cài đặt vào app:</strong> Đặt file PNG vào thư mục <code>/public/</code></li>
+        <li><strong>Cập nhật manifest:</strong> Thêm icon paths vào <code>manifest.json</code></li>
+        <li><strong>Test PWA:</strong> Build app và kiểm tra icon trên home screen</li>
+      </ol>
+    </div>
+
+    <div
+      style="text-align: center; margin-top: 40px; padding: 20px; background: linear-gradient(45deg, #fecfef, #ff9a9e); border-radius: 15px;">
+      <h3 style="color: white; margin: 0;">💗 Chúc bạn và người yêu luôn hạnh phúc!</h3>
+    </div>
+  </div>
+
+  <script>
+    // Load và render SVG lên canvas
+    async function loadSVGToCanvas(size) {
+      const canvas = document.getElementById(`canvas${size}`);
+      const ctx = canvas.getContext('2d');
+
+      // Fetch SVG content
+      const response = await fetch('love-app-icon.svg');
+      const svgText = await response.text();
+
+      // Create SVG blob và object URL  
+      const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(svgBlob);
+
+      // Create image và draw lên canvas
+      const img = new Image();
+      img.onload = function () {
+        ctx.clearRect(0, 0, size, size);
+        ctx.drawImage(img, 0, 0, size, size);
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
+
+    // Download icon với kích thước specified
+    function downloadIcon(size) {
+      const canvas = document.getElementById(`canvas${size}`);
+      const link = document.createElement('a');
+      link.download = `love-app-icon-${size}x${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Download tất cả icons
+    async function downloadAllIcons() {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      downloadIcon(192);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      downloadIcon(512);
+
+      // Show success message
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = '✅ Đã tải xuống thành công!';
+      btn.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = 'linear-gradient(45deg, #ff69b4, #ff1493)';
+      }, 2000);
+    }
+
+    // Load icons khi page load
+    window.addEventListener('load', () => {
+      loadSVGToCanvas(192);
+      loadSVGToCanvas(512);
+    });
+  </script>
+</body>
+
+</html>
