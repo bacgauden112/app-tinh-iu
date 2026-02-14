@@ -43,9 +43,7 @@ function App() {
         <div style={styles.installCard}>
           <div>
             <div style={styles.installTitle}>Cài App Tình Iu</div>
-            <div style={styles.installSubtitle}>
-              Made by <b>Quang Anh</b> - <i>Để lưu giữ kỉ niệm tình yêu</i>
-            </div>
+            <div style={styles.installSubtitle}></div>
           </div>
           <button style={styles.installButton} onClick={handleInstallClick}>
             Cài ngay
@@ -72,12 +70,13 @@ const styles = {
     gap: "20px",
   },
   installCard: {
-    width: "min(720px, 100%)",
+    width: "calc(100% - 40px)",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     gap: "16px",
     padding: "16px 18px",
+    margin: "0 20px",
     borderRadius: "18px",
     color: "#5a1d2c",
     background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
