@@ -5,17 +5,21 @@
 "App Tình Iu" là ứng dụng tình yêu dành cho các cặp đôi Việt Nam, được xây dựng với React + Vite, tích hợp Firebase realtime và hỗ trợ PWA. Ứng dụng bao gồm 5 module chính theo bản thiết kế:
 
 1. **LOVE COUNTER** - Đếm ngày yêu, nhắc nhở kỷ niệm ✅
-2. **WISHLIST** - Danh sách mong muốn với tính năng random 🔄
+2. **WISHLIST** - Danh sách mong muốn (quán ăn, việc muốn làm, địa điểm) với tính năng random ✅
 3. **OUR MEMORIES** - Kho ảnh chung và check-in hàng ngày ⏳
 4. **LOVE LETTER** - Thư tình với tính năng hẹn giờ ⏳
 5. **LOVE VOUCHER** - Voucher thưởng phạt tùy chỉnh ⏳
 
 ## Architecture & Current State
 
-### Implemented Components
+### App Structure
 
+- **Tab-based Navigation** (fixed at bottom) ✅
+- **4 Main Modules**: Love Counter, Wishlist, Our Memories, Love Voucher
+
+- **[App.jsx](src/App.jsx)** ✅ - Tab navigation system với fixed bottom bar
 - **[LoveCounter](src/components/LoveCounter.jsx)** ✅ - Tính ngày yêu, nhận prop `startDate` format 'YYYY-MM-DD'
-- **[Wishlist](src/components/Wishlist.jsx)** 🔄 - Firebase realtime với random picker, cần hoàn thiện surprise mode
+- **[Wishlist](src/components/Wishlist.jsx)** ✅ - 3 danh mục (quán ăn, việc muốn làm, địa điểm) với Firebase realtime, random picker, thêm/xóa items
 
 ### Planned Components (Chưa implement)
 
@@ -25,13 +29,7 @@
 
 ### Firebase Setup
 
-⚠️ **Critical Issue**: File [firebase.js](src/firebase.js) thiếu Firestore export:
-
-```javascript
-// Add these imports and export to firebase.js
-import { getFirestore } from "firebase/firestore";
-export const db = getFirestore(app);
-```
+✅ **Firebase setup hoàn tất**: File [firebase.js](src/firebase.js) đã cấu hình Firestore export.
 
 ## Development Workflows
 
@@ -44,7 +42,7 @@ export const db = getFirestore(app);
 
 ### Firebase Collections Structure
 
-- **`wishlist`** - `{ name: string, status: "pending", createdAt: Date }`
+- **`wishlist`** ✅ - `{ name: string, category: "restaurants" | "activities" | "places", createdAt: Date }`
 - **`memories`** (planned) - `{ imageUrl: string, date: Date, caption: string }`
 - **`letters`** (planned) - `{ content: string, deliveryDate: Date, tag: string, isRead: boolean }`
 - **`vouchers`** (planned) - `{ title: string, expiryDate: Date, isUsed: boolean, linkedWishlistId?: string }`

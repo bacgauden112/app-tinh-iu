@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 import LoveCounter from "./components/LoveCounter";
+import Wishlist from "./components/Wishlist";
+
+const TABS = [
+  { id: "counter", label: "Love Counter", emoji: "💕" },
+  { id: "wishlist", label: "Wishlist", emoji: "🎁" },
+  { id: "memories", label: "Our Memories", emoji: "📸" },
+  { id: "voucher", label: "Love Voucher", emoji: "🎟️" },
+];
 
 function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -8,6 +16,7 @@ function App() {
   const [showInstalledNotice, setShowInstalledNotice] = useState(false);
   const [showManualInstallHint, setShowManualInstallHint] = useState(false);
   const [installHintText, setInstallHintText] = useState("");
+  const [activeTab, setActiveTab] = useState("counter");
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent || "";
@@ -109,11 +118,69 @@ function App() {
 
   return (
     <div style={styles.page}>
-      {/* LOVE COUNTER - Đếm ngày yêu với kỷ niệm */}
-      <LoveCounter startDate={import.meta.env.VITE_LOVE_START_DATE} />
+      {/* TAB CONTENT */}
+      <div style={styles.contentArea}>
+        {/* Love Counter */}
+        {activeTab === "counter" && (
+          <div style={styles.tabContent}>
+            <LoveCounter startDate={import.meta.env.VITE_LOVE_START_DATE} />
+          </div>
+        )}
 
-      {/* Các tính năng khác sẽ thêm ở đây... */}
-      <p style={styles.footerHint}>Vuốt xuống để xem thêm kỉ niệm</p>
+        {/* Wishlist */}
+        {activeTab === "wishlist" && (
+          <div style={styles.tabContent}>
+            <Wishlist />
+          </div>
+        )}
+
+        {/* Our Memories - Placeholder */}
+        {activeTab === "memories" && (
+          <div style={styles.tabContent}>
+            <div style={styles.placeholderCard}>
+              <h2 style={styles.placeholderEmoji}>📸</h2>
+              <h3 style={styles.placeholderTitle}>Our Memories</h3>
+              <p style={styles.placeholderText}>
+                Kho ảnh chung và check-in hàng ngày
+              </p>
+              <p style={styles.placeholderSoon}>Tính năng sắp có...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Love Voucher - Placeholder */}
+        {activeTab === "voucher" && (
+          <div style={styles.tabContent}>
+            <div style={styles.placeholderCard}>
+              <h2 style={styles.placeholderEmoji}>🎟️</h2>
+              <h3 style={styles.placeholderTitle}>Love Voucher</h3>
+              <p style={styles.placeholderText}>
+                Voucher thưởng phạt tùy chỉnh
+              </p>
+              <p style={styles.placeholderSoon}>Tính năng sắp có...</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* TAB NAVIGATION BAR - Fixed at bottom */}
+      <div style={styles.tabBar}>
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              ...styles.tabButton,
+              ...(activeTab === tab.id
+                ? styles.tabButtonActive
+                : styles.tabButtonInactive),
+            }}
+          >
+            <span style={styles.tabEmoji}>{tab.emoji}</span>
+            <span style={styles.tabLabel}>{tab.label}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -126,7 +193,90 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "20px",
+    minHeight: "100vh",
+    paddingBottom: "80px",
+  },
+  contentArea: {
+    width: "100%",
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
+  tabContent: {
+    width: "100%",
+    paddingTop: "20px",
+  },
+  tabBar: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    display: "flex",
+    justifyContent: "space-around",
+    alignItems: "center",
+    background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+    boxShadow: "0 -4px 16px rgba(255, 126, 179, 0.25)",
+    height: "70px",
+    zIndex: 100,
+    borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+  },
+  tabButton: {
+    flex: 1,
+    height: "100%",
+    border: "none",
+    background: "none",
+    cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "4px",
+    transition: "all 0.3s",
+  },
+  tabButtonActive: {
+    background: "rgba(255, 255, 255, 0.2)",
+    color: "#fff",
+  },
+  tabButtonInactive: {
+    opacity: 0.7,
+    color: "rgba(255, 255, 255, 0.8)",
+  },
+  tabEmoji: {
+    fontSize: "1.3rem",
+  },
+  tabLabel: {
+    fontSize: "0.7rem",
+    fontWeight: "600",
+    whiteSpace: "nowrap",
+  },
+  placeholderCard: {
+    margin: "40px 20px",
+    padding: "40px 24px",
+    background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+    borderRadius: "25px",
+    textAlign: "center",
+    color: "white",
+    boxShadow: "0 8px 24px rgba(255, 105, 180, 0.25)",
+  },
+  placeholderEmoji: {
+    fontSize: "3rem",
+    margin: "0 0 16px 0",
+  },
+  placeholderTitle: {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    margin: "0 0 8px 0",
+  },
+  placeholderText: {
+    fontSize: "0.95rem",
+    opacity: 0.9,
+    margin: "0 0 16px 0",
+  },
+  placeholderSoon: {
+    fontSize: "0.85rem",
+    opacity: 0.7,
+    fontStyle: "italic",
+    margin: 0,
   },
   installScreen: {
     minHeight: "100vh",
