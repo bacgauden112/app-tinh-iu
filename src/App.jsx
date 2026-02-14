@@ -6,8 +6,24 @@ function App() {
   const [canInstall, setCanInstall] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [showInstalledNotice, setShowInstalledNotice] = useState(false);
+  const [showManualInstallHint, setShowManualInstallHint] = useState(false);
+  const [installHintText, setInstallHintText] = useState("");
 
   useEffect(() => {
+    const userAgent = window.navigator.userAgent || "";
+    const isIos = /iphone|ipad|ipod/i.test(userAgent);
+    const isAndroid = /android/i.test(userAgent);
+    const hintText = isIos
+      ? 'Nếu không thấy nút Cài ngay, hãy nhấn Chia sẻ và chọn "Add to Home Screen".'
+      : isAndroid
+        ? 'Nếu không thấy nút Cài ngay, hãy mở menu trình duyệt và chọn "Cài đặt ứng dụng" hoặc "Thêm vào màn hình chính".'
+        : 'Nếu không thấy nút Cài ngay, hãy mở menu trình duyệt và chọn "Cài đặt ứng dụng".';
+    setInstallHintText(hintText);
+
+    const hintTimer = window.setTimeout(() => {
+      setShowManualInstallHint(true);
+    }, 1200);
+
     const checkStandalone = () => {
       const isStandaloneMode =
         window.matchMedia("(display-mode: standalone)").matches ||
@@ -29,18 +45,21 @@ function App() {
       event.preventDefault();
       setDeferredPrompt(event);
       setCanInstall(true);
+      setShowManualInstallHint(false);
     };
 
     const handleAppInstalled = () => {
       setDeferredPrompt(null);
       setCanInstall(false);
       setShowInstalledNotice(true);
+      setShowManualInstallHint(false);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstall);
     window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
+      window.clearTimeout(hintTimer);
       if (mediaQuery.removeEventListener) {
         mediaQuery.removeEventListener("change", handleDisplayModeChange);
       } else if (mediaQuery.removeListener) {
@@ -80,6 +99,9 @@ function App() {
           <div style={styles.installMessage}>
             Đã cài xong, mở App Tình Iu từ màn hình chính nhé.
           </div>
+        )}
+        {showManualInstallHint && !canInstall && !showInstalledNotice && (
+          <div style={styles.installHint}>{installHintText}</div>
         )}
       </div>
     );
@@ -153,6 +175,16 @@ const styles = {
     textAlign: "center",
     color: "#5a1d2c",
     fontWeight: 600,
+  },
+  installHint: {
+    width: "calc(100% - 40px)",
+    margin: "0 20px",
+    padding: "12px 16px",
+    textAlign: "center",
+    color: "#fff",
+    background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+    borderRadius: "14px",
+    boxShadow: "0 8px 18px rgba(255, 126, 179, 0.4)",
   },
   footerHint: {
     textAlign: "center",
